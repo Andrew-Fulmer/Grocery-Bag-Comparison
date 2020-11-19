@@ -383,7 +383,7 @@ hold off
 
 %&% Plot total change of length over mass by Handles Plastic
 figure(6)
-plotdldm(tgHandTotal,'r','s')
+plotdldm(tgHandTotal,'r','s');
 plotdldm(cvsHandTotal,'k','.');
 plotdldm(flHandTotal,'b','x');
 title('Change in Mass vs Total Change in Bag Length - Plastic Handles')
