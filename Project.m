@@ -14,7 +14,7 @@
 %-- Variables
 % store                   % Name of store bag is from
 % bagType                 % Bag Type (0 = paper, 1 = plastic)
-% gripType                % Grip Type (0 = handle, 1 = no handle)
+% gripType                % Grip Type (0 = handle, 1 = side)
 % thickness               % Thickness of bag (mm)
 % breakingMass            % mass where bag breaks (kg) (0 if bag doesn't break)
 % width                   % Width of bag (mm)
@@ -39,218 +39,277 @@ clear       % clears all variables from workspace
 close all   % closes all open figures
 clc         % clears command window
 
-%% Initialize Variables
+%% Initialize Raw Data
 
 % massAry is the array of each mass put in the bags (intervals of .6)
-massAry = [0	0.6	1.2	1.8	2.4	3	3.6	4.2	4.8	5.4	6	6.6	7.2	7.8	8.4	9	9.6	10.2	10.8	11.4];
+massAry = [0 0.6 1.2 1.8 2.4 3 3.6 4.2 4.8 5.4 6 6.6 7.2 7.8 8.4 9 9.6 10.2 10.8 11.4];
 
 % Array of lengths of each bag for each mass (mm) (multiplying by 25.4 to convert to mm)
 % Plastic bags held by sides
-tgSideLAry = 25.4*[11.5	11.625	11.75	11.875	12	12	12.125	12.25	12.25	12.375	12.5	12.5	12.5	12.625	12.625	12.625	0	0	0	0];
-cvsSideLAry = 25.4*[9.125	9.375	9.5	9.625	9.625	9.625	9.75	9.875	9.875	9.875	9.875	9.875	0	0	0	0	0	0	0	0];
-flSideLAry = 25.4*[13.375	13.375	13.5	13.5	13.625	13.625	13.75	13.875	14	14.125	14.25	14.25	14.375	14.5	0	0	0	0	0	0];
+tgSideLAry = 25.4*[11.5	11.625	11.75	11.875	12	12	12.125	12.25	12.25	12.375	12.5	12.5	12.5	12.625	12.625	12.625];
+tgSideLAry2 = 25.4*[11.5	11.5	11.6875	11.6875	11.875	12	12	12.375	12.5	12.5625	12.5625	12.5625	12.5625	12.5625	12.875	12.875];
+tgSideLAry3 = 25.4*[11.5	11.5	11.0625	12.125	12.1875	12.1875	12.1875	12.25	12.375	12.5	12.5	12.75	12.75	12.75	12.75	12.75];
+tgSideAvg = avgAry(tgSideLAry,tgSideLAry2,tgSideLAry3);
+tgSideTotalLAry = [tgSideLAry(1:length(tgSideLAry)),tgSideLAry2(1:length(tgSideLAry2)),tgSideLAry3(1:length(tgSideLAry3))];
+cvsSideLAry = 25.4*[9.125	9.375	9.5	9.625	9.625	9.625	9.75	9.875	9.875	9.875	9.875	9.875];
+cvsSideLAry2 = 25.4*[9.125	9.25	9.625	9.8125	9.8125	9.8125	9.8125	9.9375	9.9375	9.9375	9.9375	9.9375];
+cvsSideLAry3 = 25.4*[9.125	8.9375	9.5	9.5625	9.5625	9.5625	9.625	10.0625	10.0625	10.0625	10.0625	10.0625];
+cvsSideAvg = avgAry(cvsSideLAry,cvsSideLAry2,cvsSideLAry3);
+cvsSideTotalLAry = [cvsSideLAry(1:length(cvsSideLAry)),cvsSideLAry2(1:length(cvsSideLAry2)),cvsSideLAry3(1:length(cvsSideLAry3))];
+flSideLAry = 25.4*[13.375	13.375	13.5	13.5	13.625	13.625	13.75	13.875	14	14.125	14.25	14.25	14.375	14.5];
+flSideLAry2 = 25.4*[13.375	13.5625	13.5625	13.5625	13.875	13.875	13.875	13.875	13.875	13.875	14.3125	14.5	14.5	14.625];
+flSideLAry3 = 25.4*[13.375	13.4375	13.4375	13.625	13.625	13.625	13.6875	14.0625	14.0625	14.0625	14.3125	14.3125	14.625	14.625];
+flSideAvg = avgAry(flSideLAry,flSideLAry2,flSideLAry3);
+flSideTotalLAry = [flSideLAry(1:length(flSideLAry)),flSideLAry2(1:length(flSideLAry2)),flSideLAry3(1:length(flSideLAry3))];
 % Plastic bags held by handles
-tgHandLAry = 25.4*[17.325	17.75	18	18.125	18.125	18.25	18.25	18.375	18.375	18.5	18.5	18.5625	18.625	18.625	18.6875	18.75	0	0	0	0];
-cvsHandLAry = 25.4*[14	14.25	14.375	14.625	14.75	14.875	14.875	15	15	15.25	15.5	15.625	15.625	15.75	0	0	0	0	0	0];
-flHandLAry = 25.4*[17	17	17	17	17.125	17.25	17.25	17.375	17.5	17.5	17.75	0	0	0	0	0	0	0	0	0];
+tgHandLAry = 25.4*[17.325	17.75	18	18.125	18.125	18.25	18.25	18.375	18.375	18.5	18.5	18.5625	18.625	18.625	18.6875	18.75];
+tgHandLAry2 = 25.4*[17.325	17.25	17.6875	18.0625	18.0625	18.4375	18.4375	18.4375	18.4375	18.5625	18.5625	18.6875	18.6875	18.6875	18.6875	18.6875];
+tgHandLAry3 = 25.4*[17.325	17.9375	17.9375	17.9375	18.0625	18.4375	18.4375	18.4375	18.4375	18.75	18.75	18.75	18.75	18.75	18.75	18.75];
+tgHandAvg = avgAry(tgHandLAry,tgHandLAry2,tgHandLAry3);
+tgHandTotalLAry = [tgHandLAry(1:length(tgHandLAry)),tgHandLAry2(1:length(tgHandLAry2)),tgHandLAry3(1:length(tgHandLAry3))];
+cvsHandLAry = 25.4*[14	14.25	14.375	14.625	14.75	14.875	14.875	15	15	15.25	15.5	15.625	15.625	15.75];
+cvsHandLAry2 = 25.4*[14	14.4375	14.4375	14.4375	14.4375	14.5	14.6875	14.6875	14.6875	15.3125	15.3125	15.75	15.75	15.75];
+cvsHandLAry3 = 25.4*[14	14.25	14.5	14.8125	15	15.1875	15.25	15.25	15.3125	15.3125	15.3125	15.4375	15.625	15.9375];
+cvsHandAvg = avgAry(cvsHandLAry,cvsHandLAry2,cvsHandLAry3);
+cvsHandTotalLAry = [cvsHandLAry(1:length(cvsHandLAry)),cvsHandLAry2(1:length(cvsHandLAry2)),cvsHandLAry3(1:length(cvsHandLAry3))];
+flHandLAry = 25.4*[17	17	17.0625	17.0625	17.125	17.25	17.25	17.375	17.5	17.5	17.75];
+flHandLAry2 = 25.4*[17	17.1625	17.0625	17.0625	17.0625	17.375	17.375	17.4375	17.625	17.625	18];
+flHandLAry3 = 25.4*[17	17.25	17.25	17.25	17.25	17.25	17.4375	17.4375	17.6875	17.6875	17.6875];
+flHandAvg = avgAry(flHandLAry,flHandLAry2,flHandLAry3);
+flHandTotalLAry = [flHandLAry(1:length(flHandLAry)),flHandLAry2(1:length(flHandLAry2)),flHandLAry3(1:length(flHandLAry3))];
 % Paper bags held by sides
-wfSideLAry = 25.4*[14	14	14.125	14.125	14.375	14.375	14.5	14.625	14.875	14.875	14.875	15	15	15.15	15.25	15.375	0	0	0	0];
-wf1SideLAry = 25.4*[14	14	14.125	14.25	14.25	14.375	14.375	14.5	14.625	14.75	14.75	14.75	14.75	14.875	14.875	15	0	0	0	0];
-tjSideLAry = 25.4*[14	14	14.25	14.25	14.25	14.375	14.375	14.375	14.5	14.5	14.5	14.5	14.625	14.625	14.625	14.875	0	0	0	0];
+wfSideLAry = 25.4*[14	14	14.125	14.125	14.375	14.375	14.5	14.625	14.875	14.875	14.875	15	15	15.15	15.25	15.375];
+wfSideLAry2 = 25.4*[14	14.0875	14.375	14.375	14.375	14.375	14.4375	14.4375	14.5	14.625	14.625	15.0625	15.0625	15.0875	15.0875	15.5];
+wfSideLAry3 = 25.4*[14	14.25	14.25	14.25	14.25	14.375	14.625	14.6875	14.6875	15	15	15	15.0625	15.275	15.275	15.4375];
+wfSideAvg = avgAry(wfSideLAry,wfSideLAry2,wfSideLAry3);
+wfSideTotalLAry = [wfSideLAry(1:length(wfSideLAry)),wfSideLAry2(1:length(wfSideLAry2)),wfSideLAry3(1:length(wfSideLAry3))];
+wf1SideLAry = 25.4*[14	14	14.125	14.25	14.25	14.375	14.375	14.5	14.625	14.75	14.75	14.75	14.75	14.875	14.875	15];
+wf1SideLAry2 = 25.4*[14	14	14.375	14.375	14.5	14.5	14.625	14.625	14.625	14.875	14.875	15	15	15	15	15.125];
+wf1SideLAry3 = 25.4*[14	14	14.0625	14.375	14.375	14.375	14.5625	14.5625	14.875	14.875	14.875	14.875	14.875	14.875	14.875	14.9375];
+wf1SideAvg = avgAry(wf1SideLAry,wf1SideLAry2,wf1SideLAry3);
+wf1SideTotalLAry = [wf1SideLAry(1:length(wf1SideLAry)),wf1SideLAry2(1:length(wf1SideLAry2)),wf1SideLAry3(1:length(wf1SideLAry3))];
+tjSideLAry = 25.4*[14	14	14.25	14.25	14.25	14.375	14.375	14.375	14.5	14.5	14.5	14.5	14.625	14.625	14.625	14.875];
+tjSideLAry2 = 25.4*[14	14.25	14.25	14.25	14.25	14.5625	14.5625	14.5625	14.625	14.625	14.625	14.625	14.625	14.75	14.75	14.75];
+tjSideLAry3 = 25.4*[14	14.125	14.125	14.25	14.5	14.5	14.5	14.625	14.75	14.75	14.75	14.75	14.75	14.875	14.875	15.125];
+tjSideAvg = avgAry(tjSideLAry,tjSideLAry2,tjSideLAry3);
+tjSideTotalLAry = [tjSideLAry(1:length(tjSideLAry)),tjSideLAry2(1:length(tjSideLAry2)),tjSideLAry3(1:length(tjSideLAry3))];
 % Paper bags held by handles
-wfHandLAry = 25.4*[17	17	17.125	17.25	17.375	17.5	17.5	17.625	17.625	17.75	17.75	17.875	18	0	0	0	0	0	0	0];
-wf1HandLAry = 25.4*[17	17	17.125	17.125	17.25	17.25	17.375	17.375	17.5	17.625	17.75	17.75	17.875	0	0	0	0	0	0	0];
-tjHandLAry = 25.4*[17	17.125	17.125	17.25	17.25	17.375	17.375	17.375	17.5	17.5	17.5	17.5	17.625	0	0	0	0	0	0	0];
+wfHandLAry = 25.4*[17	17	17.125	17.25	17.375	17.5	17.5	17.625	17.625	17.75	17.75	17.875	18];
+wfHandLAry2 = 25.4*[17	17	17.25	17.5	17.5	17.5	17.5625	17.5625	17.5625	17.9375	17.9375	17.9375	17.9375];
+wfHandLAry3 = 25.4*[17	16.6875	17.3125	17.3125	17.4375	17.4375	17.625	17.625	17.875	17.9375	17.9375	17.9375	17.9375];
+wfHandAvg = avgAry(wfHandLAry,wfHandLAry2,wfHandLAry3);
+wfHandTotalLAry = [wfHandLAry(1:length(wfHandLAry)),wfHandLAry2(1:length(wfHandLAry2)),wfHandLAry3(1:length(wfHandLAry3))];
+wf1HandLAry = 25.4*[17	17	17.125	17.125	17.25	17.25	17.375	17.375	17.5	17.625	17.75	17.75	17.875];
+wf1HandLAry2 = 25.4*[17	17	17	17.1875	17.1875	17.1875	17.1875	17.1875	17.5625	17.5625	18	18	18];
+wf1HandLAry3 = 25.4*[17	17.1875	17.1875	17.1875	17.1875	17.5	17.5	17.5	17.5	17.625	17.9375	17.9375	18];
+wf1HandAvg = avgAry(wf1HandLAry,wf1HandLAry2,wf1HandLAry3);
+wf1HandTotalLAry = [wf1HandLAry(1:length(wf1HandLAry)),wf1HandLAry2(1:length(wf1HandLAry2)),wf1HandLAry3(1:length(wf1HandLAry3))];
+tjHandLAry = 25.4*[17	17.125	17.125	17.25	17.25	17.375	17.375	17.375	17.5	17.5	17.5	17.5	17.625];
+tjHandLAry2 = 25.4*[17	17	17.3125	17.375	17.375	17.375	17.375	17.5	17.625	17.625	17.625	17.625	17.6875];
+tjHandLAry3 = 25.4*[17	17.3125	17.3125	17.3125	17.5	17.5	17.5	17.625	17.625	17.625	17.625	17.6875	17.6875];
+tjHandAvg = avgAry(tjHandLAry,tjHandLAry2,tjHandLAry3);
+tjHandTotalLAry = [tjHandLAry(1:length(tjHandLAry)),tjHandLAry2(1:length(tjHandLAry2)),tjHandLAry3(1:length(tjHandLAry3))];
 
+%wfSideTotalLAry = [wfSideLAry(1:length(wfSideLAry)),wfSideLAry2(1:length(wfSideLAry)),wfSideLAry3(1:length(wfSideLAry3))];
 
 %% Declare Experiments
 
-% Initialize target Side Experiment
-tgSide = Experiment(massAry,tgSideLAry);
-tgSide.store = 'target';
-tgSide.gripType = 1;
-tgSide.thickness = 0.025;
+% Initialize Target Side Experiment
+tgSide = Experiment(massAry,tgSideLAry,'Target','side');
 tgSide.breakingMass = 0;
-tgSide.width = 285.75;
-tgSide.aryLength = tgSide.calculateAryLength;
-tgSide.dldm = calcDwDm(tgSide);
-tgSide.totalDLDM = calcTotalDLDM(tgSide);
-tgSide.strain = calcStrain(tgSide);
+tgSide2 = Experiment(massAry,tgSideLAry2,'Target','side');
+tgSide2.breakingMass = 0;
+tgSide3 = Experiment(massAry,tgSideLAry3,'Target','side');
+tgSide3.breakingMass = 0;
+% Initialize Target Average Side Experiment
+tgSideAvg = Experiment(massAry,tgSideAvg,'Target','side');
+% Initialize Target Side Experiment Total
+tgSideTotal = Experiment([massAry,massAry,massAry],tgSideTotalLAry,'Target','side');
+tgSideTotal.massAry = [massAry(1:tgSideTotal.aryLength/3),massAry(1:tgSideTotal.aryLength/3),massAry(1:tgSideTotal.aryLength/3)];
 
 % Initialize CVS Side Experiment
-cvsSide = Experiment(massAry,cvsSideLAry);
-cvsSide.store = 'CVS';
-cvsSide.gripType = 1;
-cvsSide.thickness = 0.0125;
+cvsSide = Experiment(massAry,cvsSideLAry,'CVS','side');
 cvsSide.breakingMass = 0;
-cvsSide.width = 266.7;
-cvsSide.aryLength = cvsSide.calculateAryLength;
-cvsSide.dldm = calcDwDm(cvsSide);
-cvsSide.totalDLDM = calcTotalDLDM(cvsSide);
-cvsSide.strain = calcStrain(cvsSide);
+cvsSide2 = Experiment(massAry,cvsSideLAry2,'CVS','side');
+cvsSide2.breakingMass = 0;
+cvsSide3 = Experiment(massAry,cvsSideLAry3,'CVS','side');
+cvsSide3.breakingMass = 0;
+% Initialize CVS Average Side Experiment
+cvsSideAvg = Experiment(massAry,cvsSideAvg,'CVS','side');
+% Initialize CVS Side Experiment Total
+cvsSideTotal = Experiment([massAry,massAry,massAry],cvsSideTotalLAry,'CVS','side');
+cvsSideTotal.massAry = [massAry(1:cvsSideTotal.aryLength/3),massAry(1:cvsSideTotal.aryLength/3),massAry(1:cvsSideTotal.aryLength/3)];
 
 % Initialize Food Lion Side Experiment
-flSide = Experiment(massAry,flSideLAry);
-flSide.store = 'FoodLion';
-flSide.gripType = 0;
-flSide.thickness = 0.015;
+flSide = Experiment(massAry,flSideLAry,'FoodLion','side');
 flSide.breakingMass = 6;
-flSide.width = 260.35;
-flSide.aryLength = flSide.calculateAryLength;
-flSide.dldm = calcDwDm(flSide);
-flSide.totalDLDM = calcTotalDLDM(flSide);
-flSide.strain = calcStrain(flSide);
+flSide2 = Experiment(massAry,flSideLAry2,'FoodLion','side');
+flSide2.breakingMass = 6;
+flSide3 = Experiment(massAry,flSideLAry3,'FoodLion','side');
+flSide3.breakingMass = 6;
+% Initialize Food Lion Average Side Experiment
+flSideAvg = Experiment(massAry,flSideAvg,'FoodLion','side');
+% Initialize Food Lion Side Experiment Total
+flSideTotal = Experiment([massAry,massAry,massAry],flSideTotalLAry,'FoodLion','side');
+flSideTotal.massAry = [massAry(1:flSideTotal.aryLength/3),massAry(1:flSideTotal.aryLength/3),massAry(1:flSideTotal.aryLength/3)];
 
-% Initialize tget Handle Experiment
-tgHand = Experiment(massAry,tgHandLAry);
-tgHand.store = 'target';
-tgHand.gripType = 0;
-tgHand.thickness = 0.025;
+% Initialize Target Handle Experiment
+tgHand = Experiment(massAry,tgHandLAry,'Target','handle');
 tgHand.breakingMass = 0;
-tgHand.width = 285.75;
-tgHand.aryLength = tgHand.calculateAryLength;
-tgHand.dldm = calcDwDm(tgHand);
-tgHand.totalDLDM = calcTotalDLDM(tgHand);
-tgHand.strain = calcStrain(tgHand);
+tgHand2 = Experiment(massAry,tgHandLAry2,'Target','handle');
+tgHand2.breakingMass = 0;
+tgHand3 = Experiment(massAry,tgHandLAry3,'Target','handle');
+tgHand3.breakingMass = 0;
+% Initialize Target Average Handle Experiment
+tgHandAvg = Experiment(massAry,tgHandAvg,'Target','handle');
+% Initialize Target Handle Experiment Total
+tgHandTotal = Experiment([massAry,massAry,massAry],tgHandTotalLAry,'Target','handle');
+tgHandTotal.massAry = [massAry(1:tgHandTotal.aryLength/3),massAry(1:tgHandTotal.aryLength/3),massAry(1:tgHandTotal.aryLength/3)];
 
 % Initialize CVS Handle Experiment
-cvsHand = Experiment(massAry,cvsHandLAry);
-cvsHand.store = 'CVS';
-cvsHand.gripType = 0;
-cvsHand.thickness = 0.0125;
+cvsHand = Experiment(massAry,cvsHandLAry,'CVS','handle');
 cvsHand.breakingMass = 15.5;
-cvsHand.width = 266.7;
-cvsHand.aryLength = cvsHand.calculateAryLength;
-cvsHand.dldm = calcDwDm(cvsHand);
-cvsHand.totalDLDM = calcTotalDLDM(cvsHand);
-cvsHand.strain = calcStrain(cvsHand);
+cvsHand2 = Experiment(massAry,cvsHandLAry3,'CVS','handle');
+cvsHand2.breakingMass = 15.5;
+cvsHand3 = Experiment(massAry,cvsHandLAry3,'CVS','handle');
+cvsHand3.breakingMass = 15.5;
+% Initialize CVS Average Handle Experiment
+cvsHandAvg = Experiment(massAry,cvsHandAvg,'CVS','handle');
+% Initialize CVS Handle Experiment Total
+cvsHandTotal = Experiment([massAry,massAry,massAry],cvsHandTotalLAry,'CVS','handle');
+cvsHandTotal.massAry = [massAry(1:cvsHandTotal.aryLength/3),massAry(1:cvsHandTotal.aryLength/3),massAry(1:cvsHandTotal.aryLength/3)];
 
-% Initialize Food Lion Handle Experiment
-flHand = Experiment(massAry,flHandLAry);
-flHand.store = 'FoodLion';
-flHand.gripType = 0;
-flHand.thickness = 0.015;
+% Initialize Food Lion Handle Experiments
+flHand = Experiment(massAry,flHandLAry,'FoodLion','handle');
 flHand.breakingMass = 6;
-flHand.width = 260.35;
-flHand.aryLength = flHand.calculateAryLength;
-flHand.dldm = calcDwDm(flHand);
-flHand.totalDLDM = calcTotalDLDM(flHand);
-flHand.strain = calcStrain(flHand);
+flHand2 = Experiment(massAry,flHandLAry2,'FoodLion','handle');
+flHand2.breakingMass = 6;
+flHand3 = Experiment(massAry,flHandLAry3,'FoodLion','handle');
+flHand3.breakingMass = 6;
+% Initialize Food Lion Average Handle Experiment
+flHandAvg = Experiment(massAry,flHandAvg,'FoodLion','handle');
+% Initialize Food Lion Handle Experiment Total
+flHandTotal = Experiment([massAry,massAry,massAry],flHandTotalLAry,'FoodLion','handle');
+flHandTotal.massAry = [massAry(1:flHandTotal.aryLength/3),massAry(1:flHandTotal.aryLength/3),massAry(1:flHandTotal.aryLength/3)];
 
-% Initialize Whole Foods Side Experiment 0
-wfSide = Experiment(massAry,wfSideLAry);
-wfSide.store = 'WholeFoods';
-wfSide.gripType = 0;
-wfSide.thickness = 0.17;
+% Initialize Whole Foods 0 Side Experiments
+wfSide = Experiment(massAry,wfSideLAry,'WholeFoods','side');
 wfSide.breakingMass = 6;
-wfSide.width = 301.625;
-wfSide.aryLength = wfSide.calculateAryLength;
-wfSide.dldm = calcDwDm(wfSide);
-wfSide.totalDLDM = calcTotalDLDM(wfSide);
-wfSide.strain = calcStrain(wfSide);
+wfSide2 = Experiment(massAry,wfSideLAry2,'WholeFoods','side');
+wfSide2.breakingMass = 6;
+wfSide3 = Experiment(massAry,wfSideLAry3,'WholeFoods','side');
+wfSide3.breakingMass = 6;
+% Initialize Whole Foods Average Side Experiment
+wfSideAvg = Experiment(massAry,wfSideAvg,'WholeFoods','side');
+% Initialize Whole Foods 0 Side Experiment Total
+wfSideTotal = Experiment([massAry,massAry,massAry],wfSideTotalLAry,'WholeFoods','side');
+wfSideTotal.massAry = [massAry(1:wfSideTotal.aryLength/3),massAry(1:wfSideTotal.aryLength/3),massAry(1:wfSideTotal.aryLength/3)];
 
-% Initialize Whole Foods Side Experiment 1
-wf1Side = Experiment(massAry,wf1SideLAry);
-wf1Side.store = 'WholeFoods';
-wf1Side.gripType = 0;
-wf1Side.thickness = 0.17;
+% Initialize Whole Foods 1 Side Experiments (the second group of 3)
+wf1Side = Experiment(massAry,wf1SideLAry,'WholeFoods','side');
 wf1Side.breakingMass = 6;
-wf1Side.width = 301.625;
-wf1Side.aryLength = wf1Side.calculateAryLength;
-wf1Side.dldm = calcDwDm(wf1Side);
-wf1Side.totalDLDM = calcTotalDLDM(wf1Side);
-wf1Side.strain = calcStrain(wf1Side);
+wf1Side2 = Experiment(massAry,wf1SideLAry2,'WholeFoods','side');
+wf1Side2.breakingMass = 6;
+wf1Side3 = Experiment(massAry,wf1SideLAry3,'WholeFoods','side');
+wf1Side3.breakingMass = 6;
+% Initialize Whole Foods 1 Average Side Experiment
+wf1SideAvg = Experiment(massAry,wf1SideAvg,'WholeFoods','side');
+% Initialize Whole Foods 1 Side Experiment Total
+wf1SideTotal = Experiment([massAry,massAry,massAry],wf1SideTotalLAry,'WholeFoods','side');
+wf1SideTotal.massAry = [massAry(1:wf1SideTotal.aryLength/3),massAry(1:wf1SideTotal.aryLength/3),massAry(1:wfSideTotal.aryLength/3)];
 
-% Initialize Trader Joe's Side Experiment
-tjSide = Experiment(massAry,tjSideLAry);
-tjSide.store = 'TraderJoes';
-tjSide.gripType = 0;
-tjSide.thickness = 0.12;
+% Initialize Trader Joe's Side Experiments
+tjSide = Experiment(massAry,tjSideLAry,'TraderJoes','side');
 tjSide.breakingMass = 6;
-tjSide.width = 304.8;
-tjSide.aryLength = tjSide.calculateAryLength;
-tjSide.dldm = calcDwDm(tjSide);
-tjSide.totalDLDM = calcTotalDLDM(tjSide);
-tjSide.strain = calcStrain(tjSide);
+tjSide2 = Experiment(massAry,tjSideLAry2,'TraderJoes','side');
+tjSide2.breakingMass = 6;
+tjSide3 = Experiment(massAry,tjSideLAry3,'TraderJoes','side');
+tjSide3.breakingMass = 6;
+% Initialize Trader Joe's Average Side Experiment
+tjSideAvg = Experiment(massAry,tjSideAvg,'TraderJoes','side');
+% Initialize Trader Joe's Side Experiment Total
+tjSideTotal = Experiment([massAry,massAry,massAry],tjSideTotalLAry,'TraderJoes','side');
+tjSideTotal.massAry = [massAry(1:tjSideTotal.aryLength/3),massAry(1:tjSideTotal.aryLength/3),massAry(1:tjSideTotal.aryLength/3)];
 
-% Initialize Whole Foods Handle Experiment 0
-wfHand = Experiment(massAry,wfHandLAry);
-wfHand.store = 'WholeFoods';
-wfHand.gripType = 0;
-wfHand.thickness = 0.17;
+% Initialize Whole Foods 0 Handle Experiments
+wfHand = Experiment(massAry,wfHandLAry,'WholeFoods','handle');
 wfHand.breakingMass = 6;
-wfHand.width = 301.625;
-wfHand.aryLength = wfHand.calculateAryLength;
-wfHand.dldm = calcDwDm(wfHand);
-wfHand.totalDLDM = calcTotalDLDM(wfHand);
-wfHand.strain = calcStrain(wfHand);
+wfHand2 = Experiment(massAry,wfHandLAry2,'WholeFoods','handle');
+wfHand2.breakingMass = 6;
+wfHand3 = Experiment(massAry,wfHandLAry3,'WholeFoods','handle');
+wfHand3.breakingMass = 6;
+% Initialize Whole Foods Average Handle Experiment
+wfHandAvg = Experiment(massAry,wfHandAvg,'WholeFoods','handle');
+% Initialize Whole Foods 0 Handle Experiment Total
+wfHandTotal = Experiment([massAry,massAry,massAry],wfHandTotalLAry,'WholeFoods','handle');
+wfHandTotal.massAry = [massAry(1:wfHandTotal.aryLength/3),massAry(1:wfHandTotal.aryLength/3),massAry(1:wfHandTotal.aryLength/3)];
 
-% Initialize Whole Foods Handle Experiment 1
-wf1Hand = Experiment(massAry,wf1HandLAry);
-wf1Hand.store = 'WholeFoods';
-wf1Hand.gripType = 0;
-wf1Hand.thickness = 0.17;
+% Initialize Whole Foods 1 Handle Experiment
+wf1Hand = Experiment(massAry,wf1HandLAry,'WholeFoods','handle');
 wf1Hand.breakingMass = 6;
-wf1Hand.width = 301.625;
-wf1Hand.aryLength = wf1Hand.calculateAryLength;
-wf1Hand.dldm = calcDwDm(wf1Hand);
-wf1Hand.totalDLDM = calcTotalDLDM(wf1Hand);
-wf1Hand.strain = calcStrain(wf1Hand);
+wf1Hand2 = Experiment(massAry,wf1HandLAry2,'WholeFoods','handle');
+wf1Hand2.breakingMass = 6;
+wf1Hand3 = Experiment(massAry,wf1HandLAry3,'WholeFoods','handle');
+wf1Hand3.breakingMass = 6;
+% Initialize Whole Foods 1 Average Handle Experiment
+wf1HandAvg = Experiment(massAry,wf1HandAvg,'WholeFoods','handle');
+% Initialize Whole Foods 1 Handle Experiment Total
+wf1HandTotal = Experiment([massAry,massAry,massAry],wf1HandTotalLAry,'WholeFoods','handle');
+wf1HandTotal.massAry = [massAry(1:wf1HandTotal.aryLength/3),massAry(1:wf1HandTotal.aryLength/3),massAry(1:wf1HandTotal.aryLength/3)];
 
 % Initialize Trader Joe's Handle Experiment
-tjHand = Experiment(massAry,tjHandLAry);
-tjHand.store = 'TraderJoes';
-tjHand.gripType = 0;
-tjHand.thickness = 0.12;
+tjHand = Experiment(massAry,tjHandLAry,'TraderJoes','handle');
 tjHand.breakingMass = 6;
-tjHand.width = 304.8;
-tjHand.aryLength = tjHand.calculateAryLength;
-tjHand.dldm = calcDwDm(tjHand);
-tjHand.totalDLDM = calcTotalDLDM(tjHand);
-tjHand.strain = calcStrain(tjHand);
-
-
-clearvars -except tgSide cvsSide flSide tgHand cvsHand flHand wfSide wf1Side tjSide wfHand wf1Hand tjHand
+tjHand2 = Experiment(massAry,tjHandLAry2,'TraderJoes','handle');
+tjHand2.breakingMass = 6;
+tjHand3 = Experiment(massAry,tjHandLAry3,'TraderJoes','handle');
+tjHand3.breakingMass = 6;
+% Initialize Trader Joe's Average Handle Experiment
+tjHandAvg = Experiment(massAry,tjHandAvg,'TraderJoes','handle');
+% Initialize Trader Joe's Handle Experiment Total
+tjHandTotal = Experiment([massAry,massAry,massAry],tjHandTotalLAry,'TraderJoes','handle');
+tjHandTotal.massAry = [massAry(1:tjHandTotal.aryLength/3),massAry(1:tjHandTotal.aryLength/3),massAry(1:tjHandTotal.aryLength/3)];
 
 
 %% %%% Plots
 
 %% Plot Full Length vs Mass
-%&% Plot length holding by handles plastic vs paper 
+%&% Plot length averages holding by handles plastic vs paper 
 figure(1)
-plot(cvsHand.massAry(1:cvsHand.aryLength),cvsHand.lengthAry(1:cvsHand.aryLength), '-*')
+plot(cvsHandAvg.massAry(1:cvsHandAvg.aryLength),cvsHandAvg.lengthAry(1:cvsHandAvg.aryLength), '-*')
 hold on
-plot(flHand.massAry(1:flHand.aryLength),flHand.lengthAry(1:flHand.aryLength), '-*')
+plot(flHandAvg.massAry(1:flHandAvg.aryLength),flHandAvg.lengthAry(1:flHandAvg.aryLength), '-*')
 hold on
-plot(tgHand.massAry(1:tgHand.aryLength),tgHand.lengthAry(1:tgHand.aryLength), '-*')
+plot(tgHandAvg.massAry(1:tgHandAvg.aryLength),tgHandAvg.lengthAry(1:tgHandAvg.aryLength), '-*')
 hold on
-plot(wfHand.massAry(1:wfHand.aryLength),wfHand.lengthAry(1:wfHand.aryLength), '-s')
+plot(wfHandAvg.massAry(1:wfHandAvg.aryLength),wfHandAvg.lengthAry(1:wfHandAvg.aryLength), '-s')
 hold on
-plot(wf1Hand.massAry(1:wf1Hand.aryLength),wf1Hand.lengthAry(1:wf1Hand.aryLength), '-s')
+plot(wf1HandAvg.massAry(1:wf1HandAvg.aryLength),wf1HandAvg.lengthAry(1:wf1HandAvg.aryLength), '-s')
 hold on
-plot(tjHand.massAry(1:tjHand.aryLength),tjHand.lengthAry(1:tjHand.aryLength), '-s')
+plot(tjHandAvg.massAry(1:tjHandAvg.aryLength),tjHandAvg.lengthAry(1:tjHandAvg.aryLength), '-s')
 hold on
-title('Bag Length vs Mass in Bag - Handles')
+title('Bag Length vs Mass in Bag Averages - Handles')
 xlabel('Mass in Bag (kg)') 
 ylabel('Length of Bag (mm)')
 legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg','Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'eastoutside')
 hold off
 
-%&% Plot length holding by sides plastic vs paper 
+
+%&% Plot length averages holding by sides plastic vs paper 
 figure(2)
-plot(cvsSide.massAry(1:cvsSide.aryLength),cvsSide.lengthAry(1:cvsSide.aryLength), '-*')
+plot(cvsSideAvg.massAry(1:cvsSideAvg.aryLength),cvsSideAvg.lengthAry(1:cvsSideAvg.aryLength), '-*')
 hold on
-plot(flSide.massAry(1:flSide.aryLength),flSide.lengthAry(1:flSide.aryLength), '-*')
+plot(flSideAvg.massAry(1:flSideAvg.aryLength),flSideAvg.lengthAry(1:flSideAvg.aryLength), '-*')
 hold on
-plot(tgSide.massAry(1:tgSide.aryLength),tgSide.lengthAry(1:tgSide.aryLength), '-*')
+plot(tgSideAvg.massAry(1:tgSideAvg.aryLength),tgSideAvg.lengthAry(1:tgSideAvg.aryLength), '-*')
 hold on
-plot(wfSide.massAry(1:wfSide.aryLength),wfSide.lengthAry(1:wfSide.aryLength), '-s')
+plot(wfSideAvg.massAry(1:wfSideAvg.aryLength),wfSideAvg.lengthAry(1:wfSideAvg.aryLength), '-s')
 hold on
-plot(wf1Side.massAry(1:wf1Side.aryLength),wf1Side.lengthAry(1:wf1Side.aryLength), '-s')
+plot(wf1SideAvg.massAry(1:wf1SideAvg.aryLength),wf1SideAvg.lengthAry(1:wf1SideAvg.aryLength), '-s')
 hold on
-plot(tjSide.massAry(1:tjSide.aryLength),tjSide.lengthAry(1:tjSide.aryLength), '-s')
+plot(tjSideAvg.massAry(1:tjSideAvg.aryLength),tjSideAvg.lengthAry(1:tjSideAvg.aryLength), '-s')
 hold on
-title('Bag Length vs Mass in Bag - Sides')
+title('Bag Length vs Mass in Bag Averages - Sides')
 xlabel('Mass in Bag (kg)') 
 ylabel('Length of Bag (mm)')
 legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg','Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'eastoutside')
@@ -259,105 +318,94 @@ hold off
 
 %% Plot Change of length vs Mass
 
-%&% Plot change of length over mass by handles plastic vs paper
+%&% Plot change of length over mass (averages) by handles plastic vs paper
 figure(3)
-plot(cvsHand.massAry(1:cvsHand.aryLength),cvsHand.dldm(1:cvsHand.aryLength), '-*')
+plot(cvsHandAvg.massAry(1:cvsHandAvg.aryLength),cvsHandAvg.dldm(1:cvsHandAvg.aryLength), '-*')
 hold on
-plot(flHand.massAry(1:flHand.aryLength),flHand.dldm(1:flHand.aryLength), '-*')
+plot(flHandAvg.massAry(1:flHandAvg.aryLength),flHandAvg.dldm(1:flHandAvg.aryLength), '-*')
 hold on
-plot(tgHand.massAry(1:tgHand.aryLength),tgHand.dldm(1:tgHand.aryLength), '-*')
+plot(tgHandAvg.massAry(1:tgHandAvg.aryLength),tgHandAvg.dldm(1:tgHandAvg.aryLength), '-*')
 hold on
-plot(wfHand.massAry(1:wfHand.aryLength),wfHand.dldm(1:wfHand.aryLength), '-s')
+plot(wfHandAvg.massAry(1:wfHandAvg.aryLength),wfHandAvg.dldm(1:wfHandAvg.aryLength), '-s')
 hold on
-plot(wf1Hand.massAry(1:wf1Hand.aryLength),wf1Hand.dldm(1:wf1Hand.aryLength), '-s')
+plot(wf1HandAvg.massAry(1:wf1HandAvg.aryLength),wf1HandAvg.dldm(1:wf1HandAvg.aryLength), '-s')
 hold on
-plot(tjHand.massAry(1:tjHand.aryLength),tjHand.dldm(1:tjHand.aryLength), '-s')
+plot(tjHandAvg.massAry(1:tjHandAvg.aryLength),tjHandAvg.dldm(1:tjHandAvg.aryLength), '-s')
 hold on
-title('Change in Mass vs Change in Length - Handles')
+title('Change in Mass vs Change in Length (Averages) - Handles')
 xlabel('Change in Mass in Bag (kg)') 
 ylabel('Change in Bag Length (mm)')
-legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg','Paper1-wf','Paper2-wf1','Paper3-tj'})
+legend({'Plastic1 cvs','Plastic2 fl','Plastic3 tg','Paper1 wf','Paper2 wf1','Paper3 tj'})
 hold off
 
 %&% Plot change of length over mass by sides plastic vs paper
 figure(4)
-plot(cvsSide.massAry(1:cvsSide.aryLength),cvsSide.dldm(1:cvsSide.aryLength), '-*')
+plot(cvsSideAvg.massAry(1:cvsSideAvg.aryLength),cvsSideAvg.dldm(1:cvsSideAvg.aryLength), '-*')
 hold on
-plot(flSide.massAry(1:flSide.aryLength),flSide.dldm(1:flSide.aryLength), '-*')
+plot(flSideAvg.massAry(1:flSideAvg.aryLength),flSideAvg.dldm(1:flSideAvg.aryLength), '-*')
 hold on
-plot(tgSide.massAry(1:tgSide.aryLength),tgSide.dldm(1:tgSide.aryLength), '-*')
+plot(tgSideAvg.massAry(1:tgSideAvg.aryLength),tgSideAvg.dldm(1:tgSideAvg.aryLength), '-*')
 hold on
-plot(wfSide.massAry(1:wfSide.aryLength),wfSide.dldm(1:wfSide.aryLength), '-s')
+plot(wfSideAvg.massAry(1:wfSideAvg.aryLength),wfSideAvg.dldm(1:wfSideAvg.aryLength), '-s')
 hold on
-plot(wf1Side.massAry(1:wf1Side.aryLength),wf1Side.dldm(1:wf1Side.aryLength), '-s')
+plot(wf1SideAvg.massAry(1:wf1SideAvg.aryLength),wf1SideAvg.dldm(1:wf1SideAvg.aryLength), '-s')
 hold on
-plot(tjSide.massAry(1:tjSide.aryLength),tjSide.dldm(1:tjSide.aryLength), '-s')
+plot(tjSideAvg.massAry(1:tjSideAvg.aryLength),tjSideAvg.dldm(1:tjSideAvg.aryLength), '-s')
 hold on
-title('Change in Mass vs Change in Length - Sides')
+title('Change in Mass vs Change in Length (Averages) - Sides')
 xlabel('Change in Mass in Bag (kg)') 
 ylabel('Change in Bag Length (mm)')
-legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg','Paper1-wf','Paper2-wf1','Paper3-tj'})
+legend({'Plastic1 cvs','Plastic2 fl','Plastic3 tg','Paper1 wf','Paper2 wf1','Paper3 tj'})
 hold off
 
 
 %% Plot Total change of length vs Mass
 
-%&% Plot total change of length over mass by handles plastic vs paper
+%&% Plot total change of length over mass by handles plastic vs paper (averages)
 figure(5)
-plot(cvsHand.massAry(1:cvsHand.aryLength),cvsHand.totalDLDM(1:cvsHand.aryLength), '-*')
+plot(cvsHandAvg.massAry(1:cvsHandAvg.aryLength),cvsHandAvg.totalDLDM(1:cvsHandAvg.aryLength), '-*')
 hold on
-plot(flHand.massAry(1:flHand.aryLength),flHand.totalDLDM(1:flHand.aryLength), '-*')
+plot(flHandAvg.massAry(1:flHandAvg.aryLength),flHandAvg.totalDLDM(1:flHandAvg.aryLength), '-*')
 hold on
-plot(tgHand.massAry(1:tgHand.aryLength),tgHand.totalDLDM(1:tgHand.aryLength), '-*')
+plot(tgHandAvg.massAry(1:tgHandAvg.aryLength),tgHandAvg.totalDLDM(1:tgHandAvg.aryLength), '-*')
 hold on
-plot(wfHand.massAry(1:wfHand.aryLength),wfHand.totalDLDM(1:wfHand.aryLength), '-s')
+plot(wfHandAvg.massAry(1:wfHandAvg.aryLength),wfHandAvg.totalDLDM(1:wfHandAvg.aryLength), '-s')
 hold on
-plot(wf1Hand.massAry(1:wf1Hand.aryLength),wf1Hand.totalDLDM(1:wf1Hand.aryLength), '-s')
+plot(wf1HandAvg.massAry(1:wf1HandAvg.aryLength),wf1HandAvg.totalDLDM(1:wf1HandAvg.aryLength), '-s')
 hold on
-plot(tjHand.massAry(1:tjHand.aryLength),tjHand.totalDLDM(1:tjHand.aryLength), '-s')
+plot(tjHandAvg.massAry(1:tjHandAvg.aryLength),tjHandAvg.totalDLDM(1:tjHandAvg.aryLength), '-s')
 hold on
 title('Change in Mass vs Total Change in Bag Length - Handles')
 xlabel('Change in Mass in Bag (kg)') 
 ylabel('Change in Bag Length (mm)')
-legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg','Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'northwest')
+legend({'Plastic1 cvs','Plastic2 fl','Plastic3 tg','Paper1 wf','Paper2 wf1','Paper3 tj'}, 'Location', 'northwest')
 hold off
 
-%&% Plot total change of length over mass by handles plastic
+%&% Plot total change of length over mass by Handles Plastic
 figure(6)
-plot(cvsHand.massAry(1:cvsHand.aryLength),cvsHand.totalDLDM(1:cvsHand.aryLength), '-*')
-hold on
-plot(flHand.massAry(1:flHand.aryLength),flHand.totalDLDM(1:flHand.aryLength), '-*')
-hold on
-plot(tgHand.massAry(1:tgHand.aryLength),tgHand.totalDLDM(1:tgHand.aryLength), '-*')
-hold on
+plotdldm(tgHandTotal,'r','s')
+plotdldm(cvsHandTotal,'k','.');
+plotdldm(flHandTotal,'b','x');
 title('Change in Mass vs Total Change in Bag Length - Plastic Handles')
-xlabel('Change in Mass in Bag (kg)') 
-ylabel('Change in Bag Length (mm)')
-legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg'}, 'Location', 'southeast')
+legend({'tg Best Fit','tg Data','cvs Best Fit','cvs Data','fl Best Fit', 'fl Data'}, 'Location', 'southeast')
 hold off
 
-%&% Plot total change of length over mass by handles paper
+%&% Plot total change of length over mass by Handles Paper
 figure(7)
-plot(wfHand.massAry(1:wfHand.aryLength),wfHand.totalDLDM(1:wfHand.aryLength), '-s')
-hold on
-plot(wf1Hand.massAry(1:wf1Hand.aryLength),wf1Hand.totalDLDM(1:wf1Hand.aryLength), '-s')
-hold on
-plot(tjHand.massAry(1:tjHand.aryLength),tjHand.totalDLDM(1:tjHand.aryLength), '-s')
-hold on
+plotdldm(wfHandTotal,'r','s')
+plotdldm(wf1HandTotal,'k','.');
+plotdldm(tjHandTotal,'b','x');
 title('Change in Mass vs Total Change in Bag Length - Paper Handles')
-xlabel('Change in Mass in Bag (kg)') 
-ylabel('Change in Bag Length (mm)')
-legend({'Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'southeast')
+legend({'wf Best Fit','wf Data','wf1 Best Fit','wf1 Data','tj Best Fit', 'tj Data'}, 'Location', 'southeast')
 hold off
 
-
-%&% Plot total change of length over mass by sides plastic vs paper
+%&% Plot total change of length over mass by sides plastic vs paper (averages)
 figure(8)
+plot(tgSide.massAry(1:tgSide.aryLength),tgSide.totalDLDM(1:tgSide.aryLength), '-*')
+hold on
 plot(cvsSide.massAry(1:cvsSide.aryLength),cvsSide.totalDLDM(1:cvsSide.aryLength), '-*')
 hold on
 plot(flSide.massAry(1:flSide.aryLength),flSide.totalDLDM(1:flSide.aryLength), '-*')
-hold on
-plot(tgSide.massAry(1:tgSide.aryLength),tgSide.totalDLDM(1:tgSide.aryLength), '-*')
 hold on
 plot(wfSide.massAry(1:wfSide.aryLength),wfSide.totalDLDM(1:wfSide.aryLength), '-s')
 hold on
@@ -368,35 +416,25 @@ hold on
 title('Change in Mass vs Total Change in Bag Length - Sides')
 xlabel('Change in Mass in Bag (kg)') 
 ylabel('Change in Bag Length (mm)')
-legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg','Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'southeast')
+legend({'Plastic3-tg','Plastic1-cvs','Plastic2-fl','Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'southeast')
 hold off
 
 %&% Plot total change of length over mass by Sides plastic
 figure(9)
-plot(cvsSide.massAry(1:cvsSide.aryLength),cvsSide.totalDLDM(1:cvsSide.aryLength), '-*')
-hold on
-plot(flSide.massAry(1:flSide.aryLength),flSide.totalDLDM(1:flSide.aryLength), '-*')
-hold on
-plot(tgSide.massAry(1:tgSide.aryLength),tgSide.totalDLDM(1:tgSide.aryLength), '-*')
-hold on
+plotdldm(tgSideTotal,'r','s')
+plotdldm(cvsSideTotal,'k','.');
+plotdldm(flSideTotal,'b','x');
 title('Change in Mass vs Total Change in Bag Length - Plastic Sides')
-xlabel('Change in Mass in Bag (kg)') 
-ylabel('Change in Bag Length (mm)')
-legend({'Plastic1-cvs','Plastic2-fl','Plastic3-tg'}, 'Location', 'southeast')
+legend({'tg Best Fit','tg Data','cvs Best Fit','cvs Data','fl Best Fit', 'fl Data'}, 'Location', 'southeast')
 hold off
 
 %&% Plot total change of length over mass by Sides paper
 figure(10)
-plot(wfSide.massAry(1:wfSide.aryLength),wfSide.totalDLDM(1:wfSide.aryLength), '-s')
-hold on
-plot(wf1Side.massAry(1:wf1Side.aryLength),wf1Side.totalDLDM(1:wf1Side.aryLength), '-s')
-hold on
-plot(tjSide.massAry(1:tjSide.aryLength),tjSide.totalDLDM(1:tjSide.aryLength), '-s')
-hold on
+plotdldm(wfSideTotal,'r','s');
+plotdldm(wf1SideTotal,'k','.');
+plotdldm(tjSideTotal,'b','x')
 title('Change in Mass vs Total Change in Bag Length - Paper Sides')
-xlabel('Change in Mass in Bag (kg)') 
-ylabel('Change in Bag Length (mm)')
-legend({'Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'southeast')
+legend({'wf Best Fit','wf Data','wf1 Best Fit','wf1 Data','tj Best Fit', 'tj Data'}, 'Location', 'southeast')
 hold off
 
 
@@ -458,33 +496,10 @@ ylabel('Stress (N/m^2)')
 legend({'Paper1-wf','Paper2-wf1','Paper3-tj'}, 'Location', 'southeast')
 hold off
 
-
 %% Functions
 
-%Return a new array that is 3 arrays appended together
-function newArray = appendArrays(a1, a2, a3)
-    newArray = zeros(1,length(a1)+length(a2)+length(a3));
-    % Add first array to newArray
-    for j = 1:length(a1)
-        newArray(j) = a1(j);
-    end
-    % Add second array to newArray
-    for j = 1:length(a2)
-        newArray(j + length(a1)) = a2(j);
-    end
-    % Add third array to newArray
-    for j = 1:length(a3)
-        newArray(j + length(a1) + length(a2)) = a3(j);
-    end
-end
-
-% Return a new array that is the input repeated 3 times
-function newArray = tripleArray(a)
-    newArray = zeros(1,length(a)*3);
-    for i = 1:3
-        % Add each array to newArray (each meaning the singular array)
-        for j = 1:length(a)
-            newArray((i-1)*j + j) = a(j);
-        end
-    end
+% Given 3 arrays, compute the by element average of the arrays
+function a = avgAry(a,b,c)
+    ary = cat(3,a,b,c);
+    a = mean(ary,3);
 end
