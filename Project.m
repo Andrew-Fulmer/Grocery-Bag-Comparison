@@ -46,14 +46,14 @@ massAry = [0 0.6 1.2 1.8 2.4 3 3.6 4.2 4.8 5.4 6 6.6 7.2 7.8 8.4 9 9.6 10.2 10.8
 
 % Array of lengths of each bag for each mass (mm) (multiplying by 25.4 to convert to mm)
 % Plastic bags held by sides
-tgSideLAry = 25.4*[11.5	11.625	11.75	11.875	12	12	12.125	12.25	12.25	12.375	12.5	12.5	12.5	12.625	12.625	12.625];
-tgSideLAry2 = 25.4*[11.5	11.5	11.6875	11.6875	11.875	12	12	12.375	12.5	12.5625	12.5625	12.5625	12.5625	12.5625	12.875	12.875];
-tgSideLAry3 = 25.4*[11.5	11.5	11.0625	12.125	12.1875	12.1875	12.1875	12.25	12.375	12.5	12.5	12.75	12.75	12.75	12.75	12.75];
+tgSideLAry = 25.4*[11.5     11.625	11.75	11.875	12      12      12.125	12.25	12.25	12.375	12.5	12.5	12.5	12.625	12.625	12.625];
+tgSideLAry2 = 25.4*[11.5	11.5	11.6875	11.6875	11.875	12      12      12.375	12.5	12.5625	12.5625	12.5625	12.5625	12.5625	12.875	12.875];
+tgSideLAry3 = 25.4*[11.5	11.5	11.625	12.125	12.1875	12.1875	12.1875	12.25	12.375	12.5	12.5	12.75	12.75	12.75	12.75	12.75];
 tgSideAvg = avgAry(tgSideLAry,tgSideLAry2,tgSideLAry3);
 tgSideTotalLAry = [tgSideLAry(1:length(tgSideLAry)),tgSideLAry2(1:length(tgSideLAry2)),tgSideLAry3(1:length(tgSideLAry3))];
 cvsSideLAry = 25.4*[9.125	9.375	9.5	9.625	9.625	9.625	9.75	9.875	9.875	9.875	9.875	9.875];
 cvsSideLAry2 = 25.4*[9.125	9.25	9.625	9.8125	9.8125	9.8125	9.8125	9.9375	9.9375	9.9375	9.9375	9.9375];
-cvsSideLAry3 = 25.4*[9.125	8.9375	9.5	9.5625	9.5625	9.5625	9.625	10.0625	10.0625	10.0625	10.0625	10.0625];
+cvsSideLAry3 = 25.4*[9.125	9.125	9.5	9.5625	9.5625	9.5625	9.625	10.0625	10.0625	10.0625	10.0625	10.0625];
 cvsSideAvg = avgAry(cvsSideLAry,cvsSideLAry2,cvsSideLAry3);
 cvsSideTotalLAry = [cvsSideLAry(1:length(cvsSideLAry)),cvsSideLAry2(1:length(cvsSideLAry2)),cvsSideLAry3(1:length(cvsSideLAry3))];
 flSideLAry = 25.4*[13.375	13.375	13.5	13.5	13.625	13.625	13.75	13.875	14	14.125	14.25	14.25	14.375	14.5];
@@ -63,7 +63,7 @@ flSideAvg = avgAry(flSideLAry,flSideLAry2,flSideLAry3);
 flSideTotalLAry = [flSideLAry(1:length(flSideLAry)),flSideLAry2(1:length(flSideLAry2)),flSideLAry3(1:length(flSideLAry3))];
 % Plastic bags held by handles
 tgHandLAry = 25.4*[17.325	17.75	18	18.125	18.125	18.25	18.25	18.375	18.375	18.5	18.5	18.5625	18.625	18.625	18.6875	18.75];
-tgHandLAry2 = 25.4*[17.325	17.25	17.6875	18.0625	18.0625	18.4375	18.4375	18.4375	18.4375	18.5625	18.5625	18.6875	18.6875	18.6875	18.6875	18.6875];
+tgHandLAry2 = 25.4*[17.325	17.325	17.6875	18.0625	18.0625	18.4375	18.4375	18.4375	18.4375	18.5625	18.5625	18.6875	18.6875	18.6875	18.6875	18.6875];
 tgHandLAry3 = 25.4*[17.325	17.9375	17.9375	17.9375	18.0625	18.4375	18.4375	18.4375	18.4375	18.75	18.75	18.75	18.75	18.75	18.75	18.75];
 tgHandAvg = avgAry(tgHandLAry,tgHandLAry2,tgHandLAry3);
 tgHandTotalLAry = [tgHandLAry(1:length(tgHandLAry)),tgHandLAry2(1:length(tgHandLAry2)),tgHandLAry3(1:length(tgHandLAry3))];
@@ -96,7 +96,7 @@ tjSideTotalLAry = [tjSideLAry(1:length(tjSideLAry)),tjSideLAry2(1:length(tjSideL
 % Paper bags held by handles
 wfHandLAry = 25.4*[17	17	17.125	17.25	17.375	17.5	17.5	17.625	17.625	17.75	17.75	17.875	18];
 wfHandLAry2 = 25.4*[17	17	17.25	17.5	17.5	17.5	17.5625	17.5625	17.5625	17.9375	17.9375	17.9375	17.9375];
-wfHandLAry3 = 25.4*[17	16.6875	17.3125	17.3125	17.4375	17.4375	17.625	17.625	17.875	17.9375	17.9375	17.9375	17.9375];
+wfHandLAry3 = 25.4*[17	17	17.3125	17.3125	17.4375	17.4375	17.625	17.625	17.875	17.9375	17.9375	17.9375	17.9375];
 wfHandAvg = avgAry(wfHandLAry,wfHandLAry2,wfHandLAry3);
 wfHandTotalLAry = [wfHandLAry(1:length(wfHandLAry)),wfHandLAry2(1:length(wfHandLAry2)),wfHandLAry3(1:length(wfHandLAry3))];
 wf1HandLAry = 25.4*[17	17	17.125	17.125	17.25	17.25	17.375	17.375	17.5	17.625	17.75	17.75	17.875];
@@ -401,17 +401,17 @@ hold off
 
 %&% Plot total change of length over mass by sides plastic vs paper (averages)
 figure(8)
-plot(tgSide.massAry(1:tgSide.aryLength),tgSide.totalDLDM(1:tgSide.aryLength), '-*')
+plot(tgSideAvg.massAry(1:tgSideAvg.aryLength),tgSideAvg.totalDLDM(1:tgSideAvg.aryLength), '-*')
 hold on
-plot(cvsSide.massAry(1:cvsSide.aryLength),cvsSide.totalDLDM(1:cvsSide.aryLength), '-*')
+plot(cvsSideAvg.massAry(1:cvsSideAvg.aryLength),cvsSideAvg.totalDLDM(1:cvsSideAvg.aryLength), '-*')
 hold on
-plot(flSide.massAry(1:flSide.aryLength),flSide.totalDLDM(1:flSide.aryLength), '-*')
+plot(flSideAvg.massAry(1:flSideAvg.aryLength),flSideAvg.totalDLDM(1:flSideAvg.aryLength), '-*')
 hold on
-plot(wfSide.massAry(1:wfSide.aryLength),wfSide.totalDLDM(1:wfSide.aryLength), '-s')
+plot(wfSideAvg.massAry(1:wfSideAvg.aryLength),wfSideAvg.totalDLDM(1:wfSideAvg.aryLength), '-s')
 hold on
-plot(wf1Side.massAry(1:wf1Side.aryLength),wf1Side.totalDLDM(1:wf1Side.aryLength), '-s')
+plot(wf1SideAvg.massAry(1:wf1SideAvg.aryLength),wf1SideAvg.totalDLDM(1:wf1SideAvg.aryLength), '-s')
 hold on
-plot(tjSide.massAry(1:tjSide.aryLength),tjSide.totalDLDM(1:tjSide.aryLength), '-s')
+plot(tjSideAvg.massAry(1:tjSideAvg.aryLength),tjSideAvg.totalDLDM(1:tjSideAvg.aryLength), '-s')
 hold on
 title('Change in Mass vs Total Change in Bag Length - Sides')
 xlabel('Change in Mass in Bag (kg)') 
@@ -442,11 +442,11 @@ hold off
 
 %&% Plot Stress vs Strain for plastic bags held from Handles
 figure(11)
-plot(cvsHand.strain(1:cvsHand.aryLength),cvsHand.stress(1:cvsHand.aryLength), '-*')
+plot(cvsHandAvg.strain(1:cvsHandAvg.aryLength),cvsHandAvg.stress(1:cvsHandAvg.aryLength), '-*')
 hold on
-plot(flHand.strain(1:flHand.aryLength),flHand.stress(1:flHand.aryLength), '-*')
+plot(flHandAvg.strain(1:flHandAvg.aryLength),flHandAvg.stress(1:flHandAvg.aryLength), '-*')
 hold on
-plot(tgHand.strain(1:tgHand.aryLength),tgHand.stress(1:tgHand.aryLength), '-*')
+plot(tgHandAvg.strain(1:tgHandAvg.aryLength),tgHandAvg.stress(1:tgHandAvg.aryLength), '-*')
 hold on
 title('Strain vs Stress - Plastic Handles')
 xlabel('Strain') 
@@ -456,11 +456,11 @@ hold off
 
 %&% Plot Stress vs Strain for paper bags held from Handles
 figure(12)
-plot(wfHand.strain(1:wfHand.aryLength),wfHand.stress(1:wfHand.aryLength), '-s')
+plot(wfHandAvg.strain(1:wfHandAvg.aryLength),wfHandAvg.stress(1:wfHandAvg.aryLength), '-s')
 hold on
-plot(wf1Hand.strain(1:wf1Hand.aryLength),wf1Hand.stress(1:wf1Hand.aryLength), '-s')
+plot(wf1HandAvg.strain(1:wf1HandAvg.aryLength),wf1HandAvg.stress(1:wf1HandAvg.aryLength), '-s')
 hold on
-plot(tjHand.strain(1:tjHand.aryLength),tjHand.stress(1:tjHand.aryLength), '-s')
+plot(tjHandAvg.strain(1:tjHandAvg.aryLength),tjHandAvg.stress(1:tjHandAvg.aryLength), '-s')
 hold on
 title('Strain vs Stress - Paper Handles')
 xlabel('Strain') 
@@ -470,11 +470,11 @@ hold off
 
 %&% Plot Stress vs Strain for plastic bags held from side
 figure(13)
-plot(cvsSide.strain(1:cvsSide.aryLength),cvsSide.stress(1:cvsSide.aryLength), '-*')
+plot(cvsSideAvg.strain(1:cvsSideAvg.aryLength),cvsSideAvg.stress(1:cvsSideAvg.aryLength), '-*')
 hold on
-plot(flSide.strain(1:flSide.aryLength),flSide.stress(1:flSide.aryLength), '-*')
+plot(flSideAvg.strain(1:flSideAvg.aryLength),flSideAvg.stress(1:flSideAvg.aryLength), '-*')
 hold on
-plot(tgSide.strain(1:tgSide.aryLength),tgSide.stress(1:tgSide.aryLength), '-*')
+plot(tgSideAvg.strain(1:tgSideAvg.aryLength),tgSideAvg.stress(1:tgSideAvg.aryLength), '-*')
 hold on
 title('Strain vs Stress - Plastic Sides')
 xlabel('Strain') 
@@ -484,11 +484,11 @@ hold off
 
 %&% Plot Stress vs Strain for paper bags held from side
 figure(14)
-plot(wfSide.strain(1:wfSide.aryLength),wfSide.stress(1:wfSide.aryLength), '-s')
+plot(wfSideAvg.strain(1:wfSideAvg.aryLength),wfSideAvg.stress(1:wfSideAvg.aryLength), '-s')
 hold on
-plot(wf1Side.strain(1:wf1Side.aryLength),wf1Side.stress(1:wf1Side.aryLength), '-s')
+plot(wf1SideAvg.strain(1:wf1SideAvg.aryLength),wf1SideAvg.stress(1:wf1SideAvg.aryLength), '-s')
 hold on
-plot(tjSide.strain(1:tjSide.aryLength),tjSide.stress(1:tjSide.aryLength), '-s')
+plot(tjSideAvg.strain(1:tjSideAvg.aryLength),tjSideAvg.stress(1:tjSideAvg.aryLength), '-s')
 hold on
 title('Strain vs Stress - Paper Sides')
 xlabel('Strain') 
